@@ -1,20 +1,22 @@
 from typing import Annotated
-from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import StreamingResponse  # Import StreamingResponse
-from pydantic import BaseModel
+from fastapi import APIRouter, Query
+from fastapi.responses import StreamingResponse 
+from asyncio import to_thread
 
 from app.synthesizer import synthesizer
 
 router = APIRouter()
 
-@router.get("/")
+@router.get(path="")
 async def syntesizer(
     model_id: Annotated[str | None, Query()],
     language: Annotated[synthesizer.Language | None, Query()],
     text: Annotated[str | None, Query()],
 ):
+    print(f"model - start: {text}")
     model = synthesizer.get_model(model_id, language)
-    file = model.synthesize(text)
+    file = await to_thread(model.synthesize, text) 
+    print(f"model - end: {text}")
 
     return StreamingResponse(
         file,

@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+import asyncio
+from typing import Annotated
+from fastapi import FastAPI, Query
 
 from app.synthesizer import synthesizer_router
 
@@ -11,5 +13,10 @@ app.include_router(
 )
 
 @app.get("/")
-async def root():
+async def root(
+    index: Annotated[str | None, Query()]
+):
+    print(f"root - start: {index}")
+    await asyncio.sleep(1) 
+    print(f"root - end: {index}")
     return {"message": "Hello World"}

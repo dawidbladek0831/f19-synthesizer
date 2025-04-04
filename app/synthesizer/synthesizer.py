@@ -54,6 +54,7 @@ class TextToSpeechModel:
         return text.replace("(", "").replace(")", "")
 
     def synthesize(self, text: str) -> io.BytesIO:
+        print(f"synthesize: {text}")
         self._load_model()
         cleared_text = self._cleare_text(text)
         inputs = self.tokenizer(cleared_text, return_tensors="pt").to(self.device)
@@ -65,6 +66,7 @@ class TextToSpeechModel:
         soundfile.write(buffer, output.squeeze(), self.model.config.sampling_rate, format='WAV')
         buffer.seek(0)
 
+        print(f"synthesized: {text}")
         return buffer
 
 models = {
@@ -77,8 +79,6 @@ models = {
 }
 
 def get_model(model_id: str, language: Language):
-    print("(type(language))")
-    print(type(language))
     if not (language in models) or not (model_id in models[language]):
         raise ModelNotFoundError(model_id, language)
     return models[language][model_id]
