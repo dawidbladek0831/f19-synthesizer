@@ -15,3 +15,5 @@ uvicorn==0.34.0
 httpx==0.28.1
 pytest==8.3.5
 trio==0.29.0
+
+sentencepiece==0.2.0

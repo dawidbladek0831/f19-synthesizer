@@ -10,12 +10,13 @@ router = APIRouter()
 @router.get(path="")
 async def syntesizer(
     model_id: Annotated[str | None, Query()],
+    speaker_id: Annotated[int | None, Query()],
     language: Annotated[synthesizer.Language | None, Query()],
     text: Annotated[str | None, Query()],
 ):
     print(f"model - start: {text}")
     model = synthesizer.get_model(model_id, language)
-    file = await to_thread(model.synthesize, text) 
+    file = await to_thread(model.synthesize, text, speaker_id) 
     print(f"model - end: {text}")
 
     return StreamingResponse(
