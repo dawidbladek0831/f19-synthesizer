@@ -1,26 +1,16 @@
 from enum import Enum
 import threading
-import os
 import io
 
 import torch
 from transformers import VitsModel, AutoTokenizer, SpeechT5ForTextToSpeech, SpeechT5Processor, SpeechT5HifiGan
 import soundfile
 
-from app.synthesizer.speaker_embeddings_manager import SpeakerEmbeddingsManager
-
-# import scipy
-
-models_folder_path = "./models"
+from app.synthesizer.speaker_embeddings_manager import SpeakerEmbeddingsManager, get_speaker_embeddings_manager
 
 class Language(Enum):
     ENG = "ENG"
     POL = "POL"
-
-class ModelNotFoundError(Exception):
-    def __init__(self, model_id: str, language: Language):
-        super().__init__(f"Model not found: '{model_id}' - '{language}'.")
-
 
 class TextToSpeechModel:
     def __init__(self, model_id: str, language: Language, model_path: str):
@@ -105,7 +95,9 @@ class TextToSpeechSpeechT5Model(TextToSpeechModel):
         cleared_text = self._cleare_text(text)
         
         inputs = self.processor(text=cleared_text, return_tensors="pt")
-        speaker_embeddings = speaker_embeddings_manager.get_speaker_embedding(speaker_id)
+        
+        speaker_embeddings = get_speaker_embeddings_manager().get_speaker_embedding(speaker_id)
+        
         speech = self.model.generate_speech(inputs["input_ids"], speaker_embeddings, vocoder=self.vocoder)
   
         buffer = io.BytesIO()
@@ -114,23 +106,4 @@ class TextToSpeechSpeechT5Model(TextToSpeechModel):
 
         print(f"synthesized: {text}")
         return buffer
-  
-speaker_embeddings_manager  = SpeakerEmbeddingsManager("./datasets/embeddings_dataset")
  
-models = { 
-    Language.POL: {
-        "vits": TextToSpeechVitsModel("vits", Language.POL, models_folder_path + "/local_vits"),
-    },
-    Language.ENG: {
-        "vits": TextToSpeechVitsModel("vits", Language.ENG, models_folder_path + "/speecht5"),
-        "speecht5": TextToSpeechSpeechT5Model("speecht5", Language.ENG,
-                                              models_folder_path + "/speecht5/model",
-                                              models_folder_path + "/speecht5/processor",
-                                              models_folder_path + "/hifigan/vocoder"),
-    }
-}
-
-def get_model(model_id: str, language: Language):
-    if not (language in models) or not (model_id in models[language]):
-        raise ModelNotFoundError(model_id, language)
-    return models[language][model_id]
