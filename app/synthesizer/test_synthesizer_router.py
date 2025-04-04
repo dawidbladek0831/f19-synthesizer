@@ -20,7 +20,7 @@ client = TestClient(fastAPI)
 async def test_synthesizer_concurrent_requests():
     text  =  "The time module has a function sleep() that you can use to suspend execution of the calling thread for however many seconds you specify."
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=fastAPI), base_url="http://testserver") as client:
-        tasks = [ client.get("/synthesizer", params={"model_id": "vits", "language": "ENG", "text": text}) for i in range(3)]
+        tasks = [ client.get("/synthesizer", params={"model_id": "speecht5", "speaker_id":7306, "language": "ENG", "text": text}) for i in range(30)]
         responses = await asyncio.gather(*tasks)
 
     for response in responses:
