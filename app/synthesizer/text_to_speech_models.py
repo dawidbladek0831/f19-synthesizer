@@ -7,6 +7,7 @@ from transformers import VitsModel, AutoTokenizer, SpeechT5ForTextToSpeech, Spee
 import soundfile
 
 from app.synthesizer.speaker_embeddings_manager import SpeakerEmbeddingsManager, get_speaker_embeddings_manager
+from app.utils.decorators import log_execution_time
 
 class Language(Enum):
     ENG = "ENG"
@@ -81,16 +82,15 @@ class TextToSpeechSpeechT5Model(TextToSpeechModel):
         self.processor_model_path = processor_model_path
         self.processor = None
         self.vocoder = None
-
+        
+    @log_execution_time("Loaded model")
     def _load_model_from_disk(self):
-        print(f"Loading model: {self.model_path}")
         self.model = SpeechT5ForTextToSpeech.from_pretrained(pretrained_model_name_or_path=self.model_path, local_files_only=True).to(self.device)
         self.processor = SpeechT5Processor.from_pretrained(pretrained_model_name_or_path=self.processor_model_path, local_files_only=True)
         self.vocoder = SpeechT5HifiGan.from_pretrained(pretrained_model_name_or_path=self.vocoder_model_path, local_files_only=True)
-        print(f"Loaded model: {self.model_path}")
-
+    
+    @log_execution_time("Synthesized text")
     def synthesize(self, text: str, speaker_id: int) -> io.BytesIO:
-        print(f"synthesize: {text}")
         self._load_model()
         cleared_text = self._cleare_text(text)
         
@@ -103,7 +103,5 @@ class TextToSpeechSpeechT5Model(TextToSpeechModel):
         buffer = io.BytesIO()
         soundfile.write(buffer, speech.squeeze(), 16000, format='WAV')
         buffer.seek(0)
-
-        print(f"synthesized: {text}")
         return buffer
  

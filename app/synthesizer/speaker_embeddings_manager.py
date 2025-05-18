@@ -1,10 +1,6 @@
 import threading
 from datasets import load_dataset, load_from_disk
 import torch
-import time
-
-import logging
-logger = logging.getLogger(__name__)
 
 from app.utils.decorators import log_execution_time
 
@@ -15,6 +11,7 @@ class SpeakerEmbeddingsManager:
         self.lock = threading.Lock()
         self._load_dataset()
     
+    @log_execution_time("Loaded dataset")
     def _load_dataset(self) -> None: 
         if not self._is_dataset_loaded():
             with self.lock: 
@@ -24,7 +21,6 @@ class SpeakerEmbeddingsManager:
     def _is_dataset_loaded(self) -> bool:
         return self.dataset is not None
     
-    @log_execution_time("Loaded dataset ")
     def _load_dataset_from_disk(self) -> None:
         self.dataset = load_from_disk(self.datasets_folder_path)
 
