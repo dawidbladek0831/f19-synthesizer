@@ -61,4 +61,4 @@ htmlcov/
 *.sqlite3
 
 
-models/
+download/

@@ -30,6 +30,7 @@ class SpeakerEmbeddingsManager:
             pass
         return torch.tensor(self.dataset[index]["xvector"]).unsqueeze(0)
 
+
 _speaker_embeddings_manager = None
 _speaker_embeddings_manager_lock = threading.Lock()
 
@@ -38,5 +39,5 @@ def get_speaker_embeddings_manager() -> SpeakerEmbeddingsManager:
     if _speaker_embeddings_manager is None:
         with _speaker_embeddings_manager_lock:  
             if _speaker_embeddings_manager is None:  
-                _speaker_embeddings_manager = SpeakerEmbeddingsManager("./datasets/embeddings_dataset")
+                _speaker_embeddings_manager = SpeakerEmbeddingsManager("./download/dataset/embeddings_dataset")
     return _speaker_embeddings_manager
