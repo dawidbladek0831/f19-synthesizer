@@ -18,7 +18,7 @@ Install dependencies:
 
 installs FastAPI along with a set of recommended optional dependencies—such as uvicorn, httpx, and others—primarily for running and testing FastAPI applications.
 
-    pip install "fastapi[standard]"
+    (.venv)$ pip install "fastapi[standard]"
 
 
 
