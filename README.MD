@@ -1,6 +1,5 @@
-Note nr1: This application must be run on WSL (Windows Subsystem for Linux) or a native Linux environment. It relies on phonemizer, which in turn requires espeak to be natively installed. espeak does not work properly on Windows without a native Linux layer.
-
-Note nr2: The contents of models, datasets, and vocoder are stored locally, in the ./models directory, to simplify the process of making them available to the application. Because of this, they must be downloaded manually first. Download scripts are provided as Jupyter notebooks in the ./notebooks directory
+# 0. Version
+version = 0.1.0
 
 # 1. SETUP
 ## 1.1. VENV
@@ -48,3 +47,8 @@ run server
 
     (.venv)$ fastapi dev app/main.py
 
+# 3. NOTE
+
+Note nr1: This application must be run on WSL (Windows Subsystem for Linux) or a native Linux environment. It relies on phonemizer, which in turn requires espeak to be natively installed. espeak does not work properly on Windows without a native Linux layer.
+
+Note nr2: The contents of models, datasets, and vocoder are stored locally, in the ./models directory, to simplify the process of making them available to the application. Because of this, they must be downloaded manually first. Download scripts are provided as Jupyter notebooks in the ./notebooks directory
