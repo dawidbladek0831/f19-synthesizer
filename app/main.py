@@ -1,6 +1,5 @@
 import asyncio
-from typing import Annotated
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.synthesizer import synthesizer_router
@@ -12,14 +11,13 @@ configure_logging()
 app = FastAPI()
 
 origins = [
-    "http://localhost:4200",
-    "http://localhost:8080",
+    "https://f19.dev.dawidbladek0831.org"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -31,10 +29,5 @@ app.include_router(
 )
 
 @app.get("/")
-async def root(
-    index: Annotated[str | None, Query()]
-):
-    print(f"root - start: {index}")
-    await asyncio.sleep(1) 
-    print(f"root - end: {index}")
+async def root():
     return {"message": "Hello World"}
