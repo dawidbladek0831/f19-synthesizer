@@ -10,10 +10,6 @@ configure_logging()
 
 app = FastAPI()
 
-origins = [
-    "https://f19.dev.dawidbladek0831.org"
-]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
